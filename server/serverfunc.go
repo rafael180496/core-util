@@ -132,7 +132,7 @@ func asigpet(e *echo.Echo, ps []HTTPPet, group string) error {
 
 /*findpet : busca la peticion para asignar*/
 func findpet(e *echo.Echo, p HTTPPet, group string) error {
-	path := utl.ReturnIf(group != "", p.Path+group, p.Path).(string)
+	path := utl.ReturnIf(group != "", group+p.Path, p.Path).(string)
 	switch p.Tip {
 	case POST:
 		e.POST(path, p.Pet)
