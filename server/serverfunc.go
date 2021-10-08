@@ -83,7 +83,7 @@ func (p *HTTPPet) Valid() error {
 /*Valid : Valida si un tipo de perticion es valida.*/
 func (p *HTTPTip) Valid() bool {
 	switch *p {
-	case POST, GET, PUT, DELETE:
+	case POST, GET, PUT, DELETE, PATCH, ANY:
 		return true
 	default:
 		return false
