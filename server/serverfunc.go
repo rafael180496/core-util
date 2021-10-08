@@ -93,7 +93,18 @@ func (p *HTTPTip) Valid() bool {
 /*AsigServer : asigna peticiones a una instancia ECHO */
 func AsigServer(e *echo.Echo, cs []Controller) error {
 	for _, c := range cs {
-		err := asigpet(e, c.Pets)
+		err := asigpet(e, c.Pets, "")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+/*AsigServerGroup : crea sub asignaciones o grupos de path */
+func AsigServerGroup(e *echo.Echo, cs []Controller, group string) error {
+	for _, c := range cs {
+		err := asigpet(e, c.Pets, group)
 		if err != nil {
 			return err
 		}
@@ -102,13 +113,16 @@ func AsigServer(e *echo.Echo, cs []Controller) error {
 }
 
 /*asigpet : asigna las peticiones y las valida */
-func asigpet(e *echo.Echo, ps []HTTPPet) error {
+func asigpet(e *echo.Echo, ps []HTTPPet, group string) error {
+	if utl.Trim(group) != "" {
+		group = "/" + utl.Trim(group)
+	}
 	for _, p := range ps {
 		err := p.Valid()
 		if err != nil {
 			return err
 		}
-		err = findpet(e, p)
+		err = findpet(e, p, group)
 		if err != nil {
 			return err
 		}
@@ -117,25 +131,26 @@ func asigpet(e *echo.Echo, ps []HTTPPet) error {
 }
 
 /*findpet : busca la peticion para asignar*/
-func findpet(e *echo.Echo, p HTTPPet) error {
+func findpet(e *echo.Echo, p HTTPPet, group string) error {
+	path := utl.ReturnIf(group != "", p.Path+group, p.Path).(string)
 	switch p.Tip {
 	case POST:
-		e.POST(p.Path, p.Pet)
+		e.POST(path, p.Pet)
 		return nil
 	case PUT:
-		e.PUT(p.Path, p.Pet)
+		e.PUT(path, p.Pet)
 		return nil
 	case GET:
-		e.GET(p.Path, p.Pet)
+		e.GET(path, p.Pet)
 		return nil
 	case DELETE:
-		e.DELETE(p.Path, p.Pet)
+		e.DELETE(path, p.Pet)
 		return nil
 	case PATCH:
-		e.PATCH(p.Path, p.Pet)
+		e.PATCH(path, p.Pet)
 		return nil
 	case ANY:
-		e.Any(p.Path, p.Pet)
+		e.Any(path, p.Pet)
 		return nil
 	default:
 		return utl.Msj.GetError("SR01")
