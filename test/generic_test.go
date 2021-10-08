@@ -57,3 +57,11 @@ func Test_Merge_Array(t *testing.T) {
 		t.Errorf("Actual ( %#v ) does not match expected ( %#v )", ret, expected)
 	}
 }
+
+/*TestEncodeDecode :  tranforma base64 los string  y los decodifica*/
+func TestEncodeDecode(t *testing.T) {
+	code := utl.EncodeBase64("prueba")
+	fmt.Printf("Encode:[%s]\n", code)
+	encode := utl.DecodeBase64(code)
+	fmt.Printf("Decode:[%s]\n", encode)
+}

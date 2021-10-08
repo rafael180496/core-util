@@ -12,6 +12,10 @@ Carpeta donde contiene ejemplos de las librerias creadas.
 
 Paquete que contiene funciones e estructuras variadas como utilidad de cualquier proyecto(cast,archivo,encriptacion,comando,etc..)
 
+### **Server:**
+
+Paquete para crea un api rest con ECHO mas practico un ejemplo seguir este [challengeBatchApi](https://github.com/rafael180496/challengeBatchApi).
+
 ### **Documentacion**
 
 * [Introduccion]([https://medium.com/mindorks/create-projects-independent-of-gopath-using-go-modules-802260cdfb51])

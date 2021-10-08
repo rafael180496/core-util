@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"encoding/base64"
 	"fmt"
 	"html/template"
 	"net/url"
@@ -465,4 +466,15 @@ func ToString(i interface{}) string {
 	default:
 		return ""
 	}
+}
+
+/*EncodeBase64 :  convierte a base64 un string */
+func EncodeBase64(s string) string {
+	return base64.StdEncoding.EncodeToString([]byte(s))
+}
+
+/*DecodeBase64 : convierte un string base64 a string normal*/
+func DecodeBase64(s string) string {
+	sDec, _ := base64.StdEncoding.DecodeString(s)
+	return string(sDec)
 }
