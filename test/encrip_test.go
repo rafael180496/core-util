@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	utl "github.com/rafael180496/core-util/utility"
@@ -48,4 +49,15 @@ func TestToken(t *testing.T) {
 func TestUUID(t *testing.T) {
 	text := utl.GeneredUUID()
 	t.Logf("text:[%s]", text)
+}
+
+/*TestEncryptCBC : Encriptacion AES CBC*/
+func TestEncryptCBC(t *testing.T) {
+	OrigData := "user=PEDRO|pass=super.123|correo=test@gmail.com"
+	Key := "dde4b1f8a9e6b815"
+	init := "dde4b1f8a9e6b815"
+	encrypted := utl.EncryptCBC(OrigData, Key, init)
+	fmt.Printf("\nCiphertext(base64):%s", encrypted)
+	decrypted := utl.DecryptCBC(encrypted, Key, init)
+	fmt.Printf("\nDecryption result:%s", string(decrypted))
 }
