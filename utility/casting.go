@@ -96,7 +96,7 @@ func ToTime(data interface{}) (tim time.Time, err error) {
 	case uint32:
 		return time.Unix(int64(v), 0), nil
 	default:
-		return time.Time{}, Msj.GetError("GE02")
+		return time.Time{}, fmt.Errorf("Error converting date")
 	}
 }
 

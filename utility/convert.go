@@ -34,7 +34,7 @@ func ToMapInterface(i interface{}) (map[string]interface{}, error) {
 		err := jsonStringToObject(v, &m)
 		return m, err
 	default:
-		return m, Msj.GetError("GE03")
+		return m, fmt.Errorf("error converting data to map")
 	}
 }
 
@@ -105,7 +105,7 @@ func RoundFloat64(valor float64, dec int) float64 {
 func StrToFloat64(val string) (float64, error) {
 	Float64, err := strconv.ParseFloat(val, 64)
 	if err != nil {
-		return 0, Msj.GetError("CO01")
+		return 0, err
 	}
 	return Float64, nil
 }
@@ -119,7 +119,7 @@ func Float64ToStr(val float64) string {
 func StrToInt64(val string) (int64, error) {
 	int64, err := strconv.ParseInt(val, 10, 64)
 	if err != nil {
-		return 0, Msj.GetError("CO02")
+		return 0, err
 	}
 	return int64, nil
 }
@@ -133,7 +133,7 @@ func Int64ToStr(val int64) string {
 func StrToInt32(val string) (int32, error) {
 	int64, err := strconv.ParseInt(val, 10, 64)
 	if err != nil {
-		return 0, Msj.GetError("CO03")
+		return 0, err
 	}
 	return int32(int64), nil
 }
@@ -197,5 +197,5 @@ func parsedate(s string, dates []string) (d time.Time, e error) {
 			return
 		}
 	}
-	return d, Msj.GetError("GE02")
+	return d, fmt.Errorf("Error converting date")
 }

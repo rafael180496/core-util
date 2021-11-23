@@ -8,11 +8,6 @@ import (
 )
 
 /*TestSendError : Envia un error con mensaje */
-func TestSendError(t *testing.T) {
-	t.Logf("Error:%s", utl.Msj.GetError("GE01").Error())
-}
-
-/*TestSendError : Envia un error con mensaje */
 func TestSendtTrycatch(t *testing.T) {
 	fmt.Println("Comienza")
 	utl.Block{

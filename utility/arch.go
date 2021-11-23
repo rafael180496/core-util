@@ -82,7 +82,7 @@ func (p *StLog) Init() error {
 	p.ValidF()
 	NameArch := fmt.Sprintf("%s/%s%s.log", Trim(p.Dir), Trim(p.Name), Trim(TimetoStr(p.Fe)))
 	if !FileExist(p.Dir, true) {
-		return Msj.GetError("AR05")
+		return fmt.Errorf("directory does not exist")
 	}
 	log.SetPrefix(p.Prefix)
 	log.SetFlags(log.Ldate | log.Lmicroseconds)
@@ -166,7 +166,7 @@ func FileExist(Path string, inddir bool) bool {
 func FileNew(p string) (*os.File, error) {
 	f, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return nil, Msj.GetError("AR03")
+		return nil, err
 	}
 	return f, nil
 }
@@ -175,7 +175,7 @@ func FileNew(p string) (*os.File, error) {
 el path del nuevo archivo.*/
 func TrimFile(Path string) (string, error) {
 	if !FileExist(Path, false) {
-		return "", Msj.GetError("AR01")
+		return "", fmt.Errorf("the file does not exist")
 	}
 	PathOrig := Path
 	Path = Trim(strings.Replace(Path, "\r", "", -1))
@@ -190,7 +190,7 @@ func TrimFile(Path string) (string, error) {
 func DirNew(Path string) error {
 	err := os.MkdirAll(PlecaAdd(Path), os.ModePerm)
 	if err != nil {
-		return Msj.GetError("AR02")
+		return err
 	}
 	return nil
 }
@@ -198,7 +198,7 @@ func DirNew(Path string) error {
 /*Open :  abre un archivo X*/
 func Open(Path string) (*os.File, error) {
 	if !FileExist(Path, false) {
-		return nil, Msj.GetError("AR01")
+		return nil, fmt.Errorf("the file does not exist")
 	}
 	fileOrig, err := os.Open(Path)
 	return fileOrig, err
@@ -222,7 +222,7 @@ func Write(Path string, data []byte) error {
 func CpFile(PathOrig, PathDest string) error {
 	PathDest = PlecaAdd(PathDest)
 	if !FileExist(PathDest, true) {
-		return Msj.GetError("AR05")
+		return fmt.Errorf("directory does not exist")
 	}
 	fileOrig, err := Open(PathOrig)
 	if err != nil {
@@ -249,7 +249,7 @@ func CpDir(PathOrig, PathDest string) error {
 	PathOrig = PlecaAdd(PathOrig)
 	PathDest = PlecaAdd(PathDest)
 	if !FileExist(PathOrig, true) {
-		return Msj.GetError("AR05")
+		return fmt.Errorf("directory does not exist")
 	}
 	if !FileExist(PathDest, true) {
 		err := DirNew(PathDest)
@@ -281,7 +281,7 @@ func CpDir(PathOrig, PathDest string) error {
 func RmDir(src string) error {
 	src = PlecaAdd(src)
 	if !FileExist(src, true) {
-		return Msj.GetError("AR05")
+		return fmt.Errorf("directory does not exist")
 	}
 
 	archs, err := ListDir(src)
@@ -312,7 +312,7 @@ func RmDir(src string) error {
 /*RmFile : elimina un archivo exacto*/
 func RmFile(file string) error {
 	if !FileExist(file, false) {
-		return Msj.GetError("AR01")
+		return fmt.Errorf("the file does not exist")
 	}
 	err := os.Remove(file)
 	if err != nil {
@@ -325,11 +325,11 @@ func RmFile(file string) error {
 func ListDir(src string) ([]fs.DirEntry, error) {
 	src = PlecaAdd(src)
 	if !FileExist(src, true) {
-		return nil, Msj.GetError("AR05")
+		return nil, fmt.Errorf("directory does not exist")
 	}
 	files, err := os.ReadDir(src)
 	if err != nil {
-		return nil, Msj.GetError("AR06")
+		return nil, err
 	}
 	return files, nil
 }

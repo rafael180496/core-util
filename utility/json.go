@@ -3,6 +3,7 @@ package utility
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 type (
@@ -15,25 +16,21 @@ type (
 func NewJSON(v interface{}) (JSON, error) {
 	d, err := json.Marshal(v)
 	if err != nil {
-		return d, Msj.GetError("JS01")
+		return d, err
 	}
 	return d, nil
 }
 
 /*ParseJSON : Captura el JSON con cualquier data*/
 func ParseJSON(d JSON, v interface{}) error {
-	err := json.Unmarshal(d, v)
-	if err != nil {
-		return Msj.GetError("JS02")
-	}
-	return nil
+	return json.Unmarshal(d, v)
 }
 
 /*JSONtoObj : convierte objetos JSON en map.*/
 func JSONtoObj(d JSON) ([]map[string]interface{}, error) {
 	var objs []map[string]interface{}
 	if bytes.Equal(d, []byte("null")) {
-		return objs, Msj.GetError("JS03")
+		return objs, fmt.Errorf("is null json")
 	}
 	var v interface{}
 	err := ParseJSON(d, &v)
@@ -50,7 +47,7 @@ func JSONtoObj(d JSON) ([]map[string]interface{}, error) {
 	case []map[string]interface{}:
 		objs = vv
 	default:
-		return nil, Msj.GetError("JS04")
+		return nil, fmt.Errorf("error is read json")
 	}
 
 	return objs, nil

@@ -35,15 +35,15 @@ func EncripAES(key string, text string) (string, error) {
 	bloque, err := aes.NewCipher([]byte(GeneredHashMd5(key)))
 	if err != nil {
 		fmt.Println(err.Error())
-		return "", Msj.GetError("EN01")
+		return "", fmt.Errorf("error generating phisher")
 	}
-	gcm, err2 := cipher.NewGCM(bloque)
-	if err2 != nil {
-		return "", Msj.GetError("EN02")
+	gcm, err := cipher.NewGCM(bloque)
+	if err != nil {
+		return "", fmt.Errorf("error generating block")
 	}
 	nonce := make([]byte, gcm.NonceSize())
-	if _, err3 := io.ReadFull(rand.Reader, nonce); err3 != nil {
-		return "", Msj.GetError("EN03")
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return "", fmt.Errorf("failed to read the block")
 	}
 	textoEncrip := gcm.Seal(nonce, nonce, textByte, nil)
 
@@ -56,20 +56,20 @@ func DesencripAES(key string, text string) (string, error) {
 	keyHash := []byte(GeneredHashMd5(key))
 	bloque, err := aes.NewCipher(keyHash)
 	if err != nil {
-		return "", Msj.GetError("EN01")
+		return "", fmt.Errorf("error generating phisher")
 	}
-	gcm, err2 := cipher.NewGCM(bloque)
-	if err2 != nil {
-		return "", Msj.GetError("EN02")
+	gcm, err := cipher.NewGCM(bloque)
+	if err != nil {
+		return "", fmt.Errorf("error generating block")
 	}
 	nonceSize := gcm.NonceSize()
 	if nonceSize > len(textByte) {
-		return "", Msj.GetError("EN04")
+		return "", fmt.Errorf("failed to open the block")
 	}
 	nonce, ciphertext := textByte[:nonceSize], textByte[nonceSize:]
-	textoDesencrip, err3 := gcm.Open(nil, nonce, ciphertext, nil)
-	if err3 != nil {
-		return "", Msj.GetError("EN04")
+	textoDesencrip, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to open the block")
 	}
 
 	return BytetoStr(textoDesencrip), nil

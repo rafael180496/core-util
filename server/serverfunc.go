@@ -69,13 +69,13 @@ func FindInfoReq(c echo.Context) (StInfoReq, error) {
 /*Valid : Valida si la peticon es valida*/
 func (p *HTTPPet) Valid() error {
 	if !p.Tip.Valid() {
-		return utl.Msj.GetError("SR01")
+		return fmt.Errorf("wrong request type")
 	}
 	if utl.Trim(p.Path) == "" || utl.IsSpace(p.Path) {
-		return utl.Msj.GetError("SR02")
+		return fmt.Errorf("path is invalid")
 	}
 	if p.Pet == nil {
-		return utl.Msj.GetError("SR03")
+		return fmt.Errorf("does not contain a request function")
 	}
 	return nil
 }
@@ -153,7 +153,7 @@ func findpet(e *echo.Echo, p HTTPPet, group string) error {
 		e.Any(path, p.Pet)
 		return nil
 	default:
-		return utl.Msj.GetError("SR01")
+		return fmt.Errorf("wrong request type")
 	}
 }
 

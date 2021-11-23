@@ -38,8 +38,6 @@ funcione correctamente el proyecto.**
 
 * [fatih/color]([https://github.com/fatih/color])
 
-* [go-ora]([https://github.com/sijms/go-ora])
-
 * [lib/pq]([https://github.com/lib/pq])
 
 * [go-sql-driver/mysql]([https://github.com/go-sql-driver/mysql])

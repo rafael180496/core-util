@@ -242,22 +242,22 @@ func (p *MasterWorker) LoadConfig(PathJSON string) error {
 		ptrArch *os.File
 	)
 	if !FileExt(PathJSON, "JSON") {
-		return Msj.GetError("CN09")
+		return fmt.Errorf("the config json file does not exist")
 	}
 	p.pathjson = PathJSON
 	PathJSON, err = TrimFile(PathJSON)
 	if err != nil {
-		return Msj.GetError("CN08")
+		return err
 	}
 	ptrArch, err = os.Open(PathJSON)
 	if err != nil {
-		return Msj.GetError("CN08")
+		return err
 	}
 	defer ptrArch.Close()
 	decJSON := json.NewDecoder(ptrArch)
 	err = decJSON.Decode(&config)
 	if err != nil {
-		return Msj.GetError("CN08")
+		return err
 	}
 	p.config = config
 	return nil
