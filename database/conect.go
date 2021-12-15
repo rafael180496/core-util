@@ -129,8 +129,14 @@ func (p *StCadConect) Trim() {
 }
 
 /*ConfigURL : captura una conexion nativa de drive para base de datos*/
-func (p *StConect) ConfigURL(url string) {
+func (p *StConect) ConfigURL(url, tp string) error {
+	valid := ValidPrefix(tp)
+	if !valid {
+		return fmt.Errorf("type database not supports")
+	}
+	p.Conexion.TP = tp
 	p.urlNative = url
+	return nil
 }
 
 /*ConfigJSON : Lee las configuraciones de conexion mediante un .json
@@ -293,9 +299,7 @@ func (p *StConect) Con() error {
 	var (
 		err, errping error
 	)
-	conexion := p.Conexion
-	prefijo, cadena := strURL(p.Conexion.TP, conexion)
-	cadena = utl.ReturnIf(!utl.IsNilStr(p.urlNative), cadena, p.urlNative).(string)
+	prefijo, cadena := p.urlConect()
 	if cadena == "" {
 		return fmt.Errorf("unsupported DB type")
 	}

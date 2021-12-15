@@ -27,6 +27,20 @@ func strURL(tp string, conexion StCadConect) (string, string) {
 	}
 }
 
+/*urlConect : manda la conexion de base datos correspondiente por tipo*/
+func (p *StConect) urlConect() (string, string) {
+	if !utl.IsNilStr(p.urlNative) {
+		return PrefijosDB[p.Conexion.TP], p.urlNative
+	}
+	return strURL(p.Conexion.TP, p.Conexion)
+}
+
+/*ValidPrefix : Valida si el prefijo de base de datos existe */
+func ValidPrefix(tp string) bool {
+	_, exist := PrefijosDB[tp]
+	return exist
+}
+
 /*validTipDB : valida el tipo de sql que insertara.*/
 func validTipDB(sqlOrig string, tp string) error {
 	var (
