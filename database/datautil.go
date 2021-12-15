@@ -29,7 +29,7 @@ func strURL(tp string, conexion StCadConect) (string, string) {
 
 /*urlConect : manda la conexion de base datos correspondiente por tipo*/
 func (p *StConect) urlConect() (string, string) {
-	if !utl.IsNilStr(p.urlNative) {
+	if utl.Trim(p.urlNative) != "" {
 		return PrefijosDB[p.Conexion.TP], p.urlNative
 	}
 	return strURL(p.Conexion.TP, p.Conexion)
