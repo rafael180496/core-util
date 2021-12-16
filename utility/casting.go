@@ -33,6 +33,22 @@ func MapStrKeys(data *map[string]interface{}) []string {
 
 }
 
+/*JsonStructMapData : convierte un struct con tag json a map interface*/
+func JsonStructMapData(data interface{}) (map[string]interface{}, error) {
+	jsonIn, err := NewJSON(data)
+	if err != nil {
+		return nil, err
+	}
+	mapData, err := JSONtoObj(jsonIn)
+	if err != nil {
+		return nil, err
+	}
+	if len(mapData) <= 0 {
+		return nil, fmt.Errorf("empty map")
+	}
+	return mapData[0], nil
+}
+
 /*StructToMap : Convierte un struct a map[string] */
 func StructToMap(i interface{}) (valores url.Values) {
 	valores = url.Values{}
