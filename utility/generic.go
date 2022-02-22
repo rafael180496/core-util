@@ -4,12 +4,25 @@ import (
 	"fmt"
 	ramdom "math/rand"
 	"net/url"
+	"os"
 	"reflect"
 	"strings"
 	"time"
 	"unicode"
 	"unicode/utf8"
 )
+
+/*EnvsLoad : carga un arreglo con variables de entorno y lo regresar enun map[string]string*/
+func EnvsLoad(envs ...string) (map[string]string, error) {
+	var m = map[string]string{}
+	if len(envs) == 0 {
+		return nil, fmt.Errorf("empty variable array")
+	}
+	for _, v := range envs {
+		m[v] = os.Getenv(v)
+	}
+	return m, nil
+}
 
 /*PrintMap : formatea un string con un mapa de datos este mapa de datos debe colocar
 las variables con {var1} para ser reemplazado por el dato*/
