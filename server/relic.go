@@ -5,23 +5,27 @@ including library based on https://github.com/jessie-codes/echo-relic/blob/maste
 **/
 import (
 	echo "github.com/labstack/echo/v4"
-	newrelic "github.com/newrelic/go-agent"
+	newrelic "github.com/newrelic/go-agent/v3/newrelic"
 )
 
 /*EchoRelic : structure to consume relic en go with echo*/
 type EchoRelic struct {
-	app newrelic.Application
+	app        *newrelic.Application
+	nameApp    string
+	licenseKey string
 }
 
 /*NewEchoRelic : creating an instance in relic*/
 func NewEchoRelic(appName, licenseKey string) (*EchoRelic, error) {
-	config := newrelic.NewConfig(appName, licenseKey)
-	app, err := newrelic.NewApplication(config)
+	app, err := newrelic.NewApplication(newrelic.ConfigAppName(appName),
+		newrelic.ConfigLicense(licenseKey))
 	if err != nil {
 		return nil, err
 	}
 	return &EchoRelic{
-		app: app,
+		app:        app,
+		nameApp:    appName,
+		licenseKey: licenseKey,
 	}, nil
 }
 
@@ -29,7 +33,7 @@ func NewEchoRelic(appName, licenseKey string) (*EchoRelic, error) {
 func (e *EchoRelic) Transaction(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.Request().Method + " " + c.Path()
-		txn := e.app.StartTransaction(name, c.Response().Writer, c.Request())
+		txn := e.app.StartTransaction(name)
 		txn.AddAttribute("RealIP", c.RealIP())
 		txn.AddAttribute("IsTLS", c.IsTLS())
 		txn.AddAttribute("IsWebSocket", c.IsWebSocket())
