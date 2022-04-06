@@ -17,11 +17,13 @@ import (
 
 /*StRelicSend : Structure for sending role in new relic*/
 type StRelicSend struct {
-	Timestamp time.Time `json:"timestamp"`
-	Message   string    `json:"message"`
-	LogType   string    `json:"logtype"`
-	Entity    string    `json:"entity.name"`
-	Module    string    `json:"module"`
+	Timestamp time.Time   `json:"timestamp"`
+	Message   string      `json:"message"`
+	LogType   string      `json:"logtype"`
+	Entity    string      `json:"entity.name"`
+	Project   string      `json:"project"`
+	Scope     string      `json:"scope"`
+	Payload   interface{} `json:"payload"`
 }
 
 const (
@@ -44,8 +46,8 @@ type EchoRelic struct {
 }
 
 /*Send : sending logs to new relic*/
-func (e *EchoRelic) Send(tp, module, message string) {
-	SendLogRelic(tp, module, message, e.nameApp, e.licenseKey)
+func (e *EchoRelic) Send(tp, scope, message, project string, payload interface{}) {
+	SendLogRelic(tp, scope, message, e.nameApp, project, e.licenseKey, payload)
 }
 
 /*NewEchoRelic : creating an instance in relic*/
@@ -78,13 +80,15 @@ func (e *EchoRelic) Transaction(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 /*RequestNew : structure to send logs to a new relic application*/
-func RequestNew(tp, module, message, appName, licenseKey string) (*http.Request, error) {
+func RequestNew(tp, scope, message, appName, project, licenseKey string, payload interface{}) (*http.Request, error) {
 	body, err := json.Marshal(StRelicSend{
 		Timestamp: time.Now(),
 		Message:   message,
 		LogType:   tp,
 		Entity:    appName,
-		Module:    module,
+		Scope:     scope,
+		Project:   project,
+		Payload:   payload,
 	})
 	if err != nil {
 		return nil, err
@@ -99,9 +103,9 @@ func RequestNew(tp, module, message, appName, licenseKey string) (*http.Request,
 }
 
 /*SendLogRelic : send a log to new relic*/
-func SendLogRelic(tp, module, message, appName, licenseKey string) {
+func SendLogRelic(tp, scope, message, appName, project, licenseKey string, payload interface{}) {
 	client := &http.Client{}
-	request, err := RequestNew(tp, module, message, appName, licenseKey)
+	request, err := RequestNew(tp, scope, message, appName, project, licenseKey, payload)
 	if err != nil {
 		fmt.Printf("\n[SendLogRelicErr],%v", err.Error())
 		return
