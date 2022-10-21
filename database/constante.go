@@ -25,6 +25,10 @@ const (
 	https://github.com/mattn/go-sqlite3
 	*/
 	SQLLite = "SQLLITE"
+	/*Ora : conexion tipo oracle
+	https://github.com/sijms/go-ora
+	*/
+	Ora = "ORA"
 	/*Post : conexion tipo postgres
 	https://github.com/lib/pq
 	*/
@@ -52,6 +56,12 @@ const (
 var (
 	/*TESTTABLE : quieries para probar si una tabla existe en la base de datos*/
 	TESTTABLE = map[string]string{
+		Ora: `
+		SELECT CASE WHEN COUNT(*) > 0
+			THEN 1 ELSE 0 END REG
+		FROM ALL_TABLES
+		WHERE  TABLE_NAME = :TABLENAME
+		`,
 		Post: `
 		SELECT CASE WHEN EXISTS (
 			SELECT FROM PG_TABLES
@@ -80,6 +90,8 @@ var (
 	}
 	/*CADCONN : contiene el formato de las cadenas de conexion*/
 	CADCONN = map[string]string{
+		/*oracle://user:pass@server/service_name*/
+		Ora:     "oracle://%s:%s@%s:%d/%s",
 		Post:    "postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		Mysql:   "%s:%s@tcp(%s:%d)/%s",
 		Sqlser:  "server=%s;user id=%s;password=%s;port=%d;database=%s;",
@@ -87,6 +99,7 @@ var (
 	}
 	/*PrefijosDB : contiene los string de conexion al momento de ejecutar la funcion open*/
 	PrefijosDB = map[string]string{
+		Ora:     "oracle",
 		Post:    "postgres",
 		Mysql:   "mysql",
 		Sqlser:  "mssql",

@@ -10,18 +10,20 @@ import (
 )
 
 /*strURL : Arma la cadena de conexion dependiendo del tipo*/
-func strURL(tp string, conexion StCadConect) (string, string) {
+func strURL(tp string, conn StCadConect) (string, string) {
 	switch tp {
 	case Post:
 		/*"postgres://user:password@localhost:port/bdnamme?sslmode=verify-full"*/
-		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conexion.User, conexion.Pass, conexion.Host, conexion.Port, conexion.Name, conexion.Sslmode)
+		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conn.User, conn.Pass, conn.Host, conn.Port, conn.Name, conn.Sslmode)
 	case Mysql:
 		/*sql.Open("mssql", "user:password@tcp(localhost:5555)/dbname?tls=skip-verify&autocommit=true") */
-		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conexion.User, conexion.Pass, conexion.Host, conexion.Port, conexion.Name)
+		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conn.User, conn.Pass, conn.Host, conn.Port, conn.Name)
 	case Sqlser:
-		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conexion.Host, conexion.User, conexion.Pass, conexion.Port, conexion.Name)
+		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conn.Host, conn.User, conn.Pass, conn.Port, conn.Name)
+	case Ora:
+		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conn.User, conn.Pass, conn.Host, conn.Name)
 	case SQLLite:
-		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conexion.File)
+		return PrefijosDB[tp], fmt.Sprintf(CADCONN[tp], conn.File)
 	default:
 		return "", ""
 	}
@@ -71,9 +73,9 @@ func validTipDB(sqlOrig string, tp string) error {
 }
 
 /*sendData : captura los datos de la tabla*/
-func sendData(valores []interface{}, columnas []string) StData {
+func sendData(val []interface{}, columnas []string) StData {
 	data := make(StData)
-	for i, col := range valores {
+	for i, col := range val {
 		if col == nil {
 			continue
 		}
@@ -92,17 +94,17 @@ func sendData(valores []interface{}, columnas []string) StData {
 func scanData(rows *sqlx.Rows, maxRows int, indLimit bool) ([]StData, error) {
 	var (
 		result    []StData
-		columnas  []string
+		columns   []string
 		err       error
 		countRows = 0
 	)
 	maxRows = utl.ReturnIf(maxRows <= 0, 1, maxRows).(int)
-	columnas, err = rows.Columns()
+	columns, err = rows.Columns()
 	if err != nil {
 		return result, fmt.Errorf("columns were not obtained")
 	}
-	ptrData := make([]interface{}, len(columnas))
-	valores := make([]interface{}, len(columnas))
+	ptrData := make([]interface{}, len(columns))
+	valores := make([]interface{}, len(columns))
 	for i := range valores {
 		ptrData[i] = &valores[i]
 	}
@@ -117,7 +119,7 @@ func scanData(rows *sqlx.Rows, maxRows int, indLimit bool) ([]StData, error) {
 		if err != nil {
 			return result, err
 		}
-		data := sendData(valores, columnas)
+		data := sendData(valores, columns)
 		result = append(result, data)
 	}
 	return result, nil

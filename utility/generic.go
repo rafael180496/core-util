@@ -24,8 +24,10 @@ func EnvsLoad(envs ...string) (map[string]string, error) {
 	return m, nil
 }
 
-/*PrintMap : formatea un string con un mapa de datos este mapa de datos debe colocar
-las variables con {var1} para ser reemplazado por el dato*/
+/*
+PrintMap : formatea un string con un mapa de datos este mapa de datos debe colocar
+las variables con {var1} para ser reemplazado por el dato
+*/
 func PrintMap(format string, data map[string]interface{}) string {
 	for key, item := range data {
 		str := ToString(item)
@@ -133,7 +135,8 @@ func InStr(str string, strs ...string) bool {
 	return false
 }
 
-/*FilterExcl : excluye los registro de un arreglo A  con el B  ejemplo
+/*
+FilterExcl : excluye los registro de un arreglo A  con el B  ejemplo
 A[a,b,c,d]
 B[a,b]
 Result
@@ -165,7 +168,8 @@ func FilterStr(strs []string, valid func(string) bool) (ret []string) {
 	return
 }
 
-/*ReturnIf : retorna un if ternario
+/*
+ReturnIf : retorna un if ternario
 https://github.com/TheMushrr00m/go-ternary Doc
 ReturnIf(<bool expression>, <result for true>, <result for false>)
 ReturnIf(5 > 4, "It's true", "It's false :(")

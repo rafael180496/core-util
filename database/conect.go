@@ -7,12 +7,15 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	utl "github.com/rafael180496/core-util/utility"
 
 	/*Conexion a mysql*/
 	_ "github.com/go-sql-driver/mysql"
 	/*Conexion a postgrest*/
 	_ "github.com/lib/pq"
+	/*Conexion a oracle*/
+	_ "github.com/sijms/go-ora/v2"
 	/*Conexion a sql server*/
 	_ "github.com/denisenkom/go-mssqldb"
 	/*Conexion a sqllite*/
@@ -139,7 +142,8 @@ func (p *StConect) ConfigURL(url, tp string) error {
 	return nil
 }
 
-/*ConfigJSON : Lee las configuraciones de conexion mediante un .json
+/*
+ConfigJSON : Lee las configuraciones de conexion mediante un .json
 
 Ejemplo:
 
@@ -155,7 +159,6 @@ Ejemplo:
 	"filedb":""
 
 }
-
 */
 func (p *StConect) ConfigJSON(PathJSON string) error {
 	var (
@@ -204,7 +207,8 @@ func (p *StConect) ConfigDBX(path, pass string) error {
 	return nil
 }
 
-/*ConfigINI : Lee las configuraciones de conexion mediante un .ini
+/*
+ConfigINI : Lee las configuraciones de conexion mediante un .ini
 
 Ejemplo:
 
@@ -225,7 +229,6 @@ host = Localhost
 sslmode = opcional
 
 filedb = opcional sqllite
-
 */
 func (p *StConect) ConfigINI(PathINI string) error {
 	if !utl.FileExt(PathINI, "INI") {
@@ -239,31 +242,38 @@ func (p *StConect) ConfigINI(PathINI string) error {
 	return nil
 }
 
-/*ConfigENV : lee las configuracion de la base de datos mediante variables de entorno
+/*
+ConfigENV : lee las configuracion de la base de datos mediante variables de entorno
 Ejemplo:
-ENV User = prueba
-ENV Pass = prueba
-ENV Name  = prueba
-ENV TP = POST
-ENV Port = 5433
-ENV HOST = Localhost
+ENV USERDB = prueba
+ENV PASSWORD = prueba
+ENV SERVICENAME  = prueba
+ENV TPDB = POST
+ENV PORTDB = 5433
+ENV HOSTDB = Localhost
 ENV SSLMODE = opcional
 ENV  FILEDB = opcional sqllite
+
+o en un archivo .env se colaca las variables
 */
 func (p *StConect) ConfigENV() error {
 	var (
 		cad StCadConect
 	)
-	cad.Pass = os.Getenv("PASS")
-	cad.User = os.Getenv("USERNAME")
-	cad.Name = os.Getenv("NAME")
-	cad.TP = os.Getenv("TP")
-	cad.Port = utl.ToInt(os.Getenv("PORT"))
-	cad.Host = os.Getenv("HOST")
+	err := godotenv.Load()
+	if err != nil {
+		return fmt.Errorf("invalid load .env")
+	}
+	cad.Pass = os.Getenv("PASSWORD")
+	cad.User = os.Getenv("USERDB")
+	cad.Name = os.Getenv("SERVICENAME")
+	cad.TP = os.Getenv("TPDB")
+	cad.Port = utl.ToInt(os.Getenv("PORTDB"))
+	cad.Host = os.Getenv("HOSTDB")
 	cad.Sslmode = os.Getenv("SSLMODE")
 	cad.File = os.Getenv("FILEDB")
 	if !cad.ValidCad() {
-		return fmt.Errorf("the config file is invalid")
+		return fmt.Errorf("the config connect is invalid")
 	}
 	p.Conexion = cad
 	return nil
@@ -415,6 +425,8 @@ func (p *StConect) Test() bool {
 	switch p.Conexion.TP {
 	case Post, Mysql, Sqlser, SQLLite:
 		prueba.Querie = `SELECT 1`
+	case Ora:
+		prueba.Querie = `SELECT 1 FROM DUAL`
 	}
 	dato, err := p.QueryMap(*prueba, 1, false, true)
 	if err != nil || len(dato) <= 0 {

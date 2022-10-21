@@ -122,8 +122,10 @@ func (p *MasterWorker) Finally(key string) {
 	}
 }
 
-/*FinallyDet : Finalizacion del proceso donde el indicativo reset es para reintentar secuencia ademas guarda en los logs si termino bien o tuvo un error ademas tiene la opcion de
-reconfigurar el proceso para la proxima ejecucion*/
+/*
+FinallyDet : Finalizacion del proceso donde el indicativo reset es para reintentar secuencia ademas guarda en los logs si termino bien o tuvo un error ademas tiene la opcion de
+reconfigurar el proceso para la proxima ejecucion
+*/
 func (p *MasterWorker) FinallyDet(key, msg string, indreload, inderr bool) error {
 	if p.ValidWork(key) {
 		format := fmt.Sprintf("[%s] %s\n", ToDateStr(time.Now()), msg)

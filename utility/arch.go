@@ -140,7 +140,8 @@ func FileRename(PathOrigen, PathNuevo string) error {
 	return nil
 }
 
-/*FileExist : Valida si el archivo del path existe antes de procesarlo.
+/*
+FileExist : Valida si el archivo del path existe antes de procesarlo.
 Valida tambien si existe un directorio con el inddir en true
 */
 func FileExist(Path string, inddir bool) bool {
@@ -171,8 +172,10 @@ func FileNew(p string) (*os.File, error) {
 	return f, nil
 }
 
-/*TrimFile : Renombra a una carpeta o archivo quitandole todos los espacio regresando
-el path del nuevo archivo.*/
+/*
+TrimFile : Renombra a una carpeta o archivo quitandole todos los espacio regresando
+el path del nuevo archivo.
+*/
 func TrimFile(Path string) (string, error) {
 	if !FileExist(Path, false) {
 		return "", fmt.Errorf("the file does not exist")
