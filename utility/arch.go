@@ -82,7 +82,10 @@ func (p *StLog) Init() error {
 	p.ValidF()
 	NameArch := fmt.Sprintf("%s/%s%s.log", Trim(p.Dir), Trim(p.Name), Trim(TimetoStr(p.Fe)))
 	if !FileExist(p.Dir, true) {
-		return fmt.Errorf("directory does not exist")
+		errCreate := DirNew(p.Dir)
+		if errCreate != nil {
+			return errCreate
+		}
 	}
 	log.SetPrefix(p.Prefix)
 	log.SetFlags(log.Ldate | log.Lmicroseconds)

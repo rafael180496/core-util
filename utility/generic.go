@@ -10,6 +10,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/joho/godotenv"
 )
 
 /*EnvsLoad : carga un arreglo con variables de entorno y lo regresar enun map[string]string*/
@@ -18,6 +20,7 @@ func EnvsLoad(envs ...string) (map[string]string, error) {
 	if len(envs) == 0 {
 		return nil, fmt.Errorf("empty variable array")
 	}
+	godotenv.Load(".env")
 	for _, v := range envs {
 		m[v] = os.Getenv(v)
 	}
