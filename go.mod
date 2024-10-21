@@ -1,6 +1,6 @@
 module github.com/rafael180496/core-util
 
-go 1.17
+go 1.22
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.3

@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -116,12 +115,4 @@ func SendLogRelic(tp, scope, message, appName, project, licenseKey string, paylo
 		return
 	}
 	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Printf("\n[SendLogRelicErr],%v", err.Error())
-		return
-	}
-	if response.StatusCode != 200 && response.StatusCode != 202 {
-		fmt.Printf("\n[SendLogRelic],body[%v]code[%v]\n", string(body), response.StatusCode)
-	}
 }
